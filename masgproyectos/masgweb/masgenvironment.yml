@@ -1,0 +1,7 @@
+
+CONTEXTO=/home/marco/CONTENIDO_HLC/Examen
+IDRSA=${CONTEXTO}/masgClaves
+TZ=Europe/Madrid
+APP=masgproyectos/masgWebsite/web
+REPO=https://github.com/morgadodesarrollador/websiteNext.git
+PORT=3009

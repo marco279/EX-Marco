@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  web1:
+    container_name: masgwebsite
+    image: masgwebsitenext14
+    env_file:
+      - ./masgenvironment.yml
+    build: 
+      context: ${CONTEXTO}
+      dockerfile: ./masgDB/base/masgDockerfile.dockerfile
+      args:
+      - MASGCONTEXTO1=${CONTEXTO}
+      - MASGTZ1=${TZ}
+      - MASGIDRSA1=${IDRSA}
+      - MASGAPP1=${APP}
+      - MASGREPO1=${REPO}
+    ports:
+      - "${PORT}:3000"
+    volumes:
+      - ./logs:/var/websitelogs
+    networks: 
+      netomk:
+          ipv4_address: 172.230.10.2
+    restart: always
+
+  dvb1:
+    container_name: masgDB
+    image: masgPostgres
+    env_file:
+      - ./masgenvironment.yml
+    build: 
+      context: ${CONTEXTO}
+      dockerfile: ./masgDB/base/masgDockerfile.dockerfile
+      args:
+        - MASGCONTEXTO1=${CONTEXTO}
+        - MASGTZ1=${TZ}
+        - MASGIDRSA1=${IDRSA}
+        - MASGREPO1=${REPO}
+    ports:
+      -"${PORT}:5432"
+    volumes:
+      -./logs:/var/dbsitelogs
+    networks: 
+      netomk:
+          ipv4_address: 172.230.10.3
+    restart: always
+
+networks: 
+  netomk:
+      ipam: 
+          driver: default
+          config: 
+              - subnet: 172.230.10.0/24 
+
