@@ -5,12 +5,23 @@ services:
     image: postgres
     ports:
       - "3009:3000"
+    env_file:
+      - ./masgenvironment.yml
     environment:
       DATABASE_URL: postgres://postgres:password@masg-database:5432/jardineria
     volumes:
       - ./src:/app
     depends_on:
       - masg-database
+    build: 
+      context: ${CONTEXTO}
+      dockerfile: ./masgdockerfiles/base/masgDockerfile.dockerfile
+      args:
+      - MASGCONTEXTO1=${CONTEXTO}
+      - MASGTZ1=${TZ}
+      - MASGIDRSA1=${IDRSA}
+      - MASGAPP1=${APP}
+      - MASGREPO1=${REPO}
     networks: 
       netomk:
           ipv4_address: 172.230.10.2
