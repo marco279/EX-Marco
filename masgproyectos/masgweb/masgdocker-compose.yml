@@ -1,45 +1,27 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  web1:
-    container_name: masgwebsite
-    image: masgwebsitenext14
-    env_file:
-      - ./masgenvironment.yml
-    build: 
-      context: ${CONTEXTO}
-      dockerfile: ./masgDB/base/masgDockerfile.dockerfile
-      args:
-      - MASGCONTEXTO1=${CONTEXTO}
-      - MASGTZ1=${TZ}
-      - MASGIDRSA1=${IDRSA}
-      - MASGAPP1=${APP}
-      - MASGREPO1=${REPO}
+  masg-web:
+    image: postgres
     ports:
-      - "${PORT}:3000"
+      - "3009:3000"
+    environment:
+      DATABASE_URL: postgres://postgres:password@masg-database:5432/jardineria
     volumes:
-      - ./logs:/var/websitelogs
+      - ./src:/app
+    depends_on:
+      - masg-database
     networks: 
       netomk:
           ipv4_address: 172.230.10.2
     restart: always
 
-  dvb1:
-    container_name: masgDB
-    image: masgPostgres
-    env_file:
-      - ./masgenvironment.yml
-    build: 
-      context: ${CONTEXTO}
-      dockerfile: ./masgDB/base/masgDockerfile.dockerfile
-      args:
-        - MASGCONTEXTO1=${CONTEXTO}
-        - MASGTZ1=${TZ}
-        - MASGIDRSA1=${IDRSA}
-        - MASGREPO1=${REPO}
+  masg-database:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: password
     ports:
-      -"${PORT}:5432"
-    volumes:
-      -./logs:/var/dbsitelogs
+      - "5433:5432"
     networks: 
       netomk:
           ipv4_address: 172.230.10.3
@@ -51,4 +33,3 @@ networks:
           driver: default
           config: 
               - subnet: 172.230.10.0/24 
-
